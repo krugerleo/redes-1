@@ -1,7 +1,10 @@
 #include <stdio.h> 
 #include <dirent.h> 
 #include <unistd.h>
-#include <stdlib.h>  
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 256  
 
 int list(){
     struct dirent *de;  // Pointer for directory entry 
@@ -28,7 +31,28 @@ void changeDir(char *c){
 int validMsg(char *c){
     
 }
-void readLine(){
+void readFile(){
+    FILE * fp;
+    int count=0;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen("text.txt", "r");
+    if (fp == NULL)
+        return ;
+    printf("#N N=numero da linha");
+    while ((read = getline(&line, &len, fp)) != -1) {
+        printf("#%d %s", count, line);
+        count++;
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+    return;
+}
+void readLines(int begin, int end){
     FILE * fp;
     int count=0;
     char * line = NULL;
@@ -40,9 +64,10 @@ void readLine(){
         return ;
 
     while ((read = getline(&line, &len, fp)) != -1) {
-        printf("Retrieved line of length %zu:\n", read);
-        printf("%s\n", line);
-        printf("%d\n",count);
+        if(count >= begin && count <= end){
+            printf("#%d %s", count, line);
+            count++;
+        }
         count++;
     }
 
@@ -53,90 +78,75 @@ void readLine(){
 }
 int replaceLine()
 {
-    FILE *fileptr1, *fileptr2;
-    char filechar[40];
-    char c;
-    int delete_line, temp = 1;
- 
-    printf("Enter file name: ");
-    scanf("%s", filechar);
-    fileptr1 = fopen(filechar, "r");
-    c = getc(fileptr1);
-    //print the contents of file .
-    while (c != EOF)
+    FILE *fptr1, *fptr2;
+    int lno, linectr = 0;
+    char str[MAX],fname[MAX];        
+    char newln[MAX], temp[] = "temp.txt";
+    
+    printf("\n\n Replace a specific line in a text file with a new text :\n");
+    printf("-------------------------------------------------------------\n"); 
+    printf(" Input the file name to be opened : ");
+    fgets(fname, MAX, stdin);
+    fname[strlen(fname) - 1] = '\0';
+    fptr1 = fopen(fname, "r");
+    if (!fptr1) 
     {
-        printf("%c", c);
-        c = getc(fileptr1);
+            printf("Unable to open the input file!!\n");
+            return 0;
     }
-    printf(" \n Enter line number to be deleted and replaced");
-    scanf("%d", &delete_line);
-    //take fileptr1 to start point.
-    rewind(fileptr1);
-    //open replica.c in write mode
-    fileptr2 = fopen("replica.c", "w");
-    c = getc(fileptr1);
-    while (c != EOF)
+    fptr2 = fopen(temp, "w");
+    if (!fptr2) 
     {
-        if (c == 'n')
+            printf("Unable to open a temporary file to write!!\n");
+            fclose(fptr1);
+            return 0;
+    }
+    /* get the new line from the user */
+    printf(" Input the content of the new line : ");
+    fgets(newln, MAX, stdin);
+    /* get the line number to delete the specific line */
+    printf(" Input the line no you want to replace : ");
+    scanf("%d", &lno);
+    lno++;
+        // copy all contents to the temporary file other except specific line
+    while (!feof(fptr1)) 
+    {
+        strcpy(str, "\0");
+        fgets(str, MAX, fptr1);
+        if (!feof(fptr1)) 
         {
-            temp++;
-        }
-        //till the line to be deleted comes,copy the content to other
-        if (temp != delete_line)
-        {
-            putc(c, fileptr2);
-        }
-        else
-        {
-            while ((c = getc(fileptr1)) != 'n')
-            {
+            linectr++;
+            if (linectr != lno) 
+                {
+                    fprintf(fptr2, "%s", str);
+                } 
+                else 
+                {
+                    fprintf(fptr2, "%s", newln);
+                }
             }
-            //read and skip the line ask for new text
-            printf("Enter new text");
-            //flush the input stream
-            fflush(stdin);
-            putc('n', fileptr2);
-            //put 'n' in new file
-            while ((c = getchar()) != 'n')
-                putc(c, fileptr2);
-            //take the data from user and place it in new file
-            fputs("n", fileptr2);
-            temp++;
-        }
-        //continue this till EOF is encountered
-        c = getc(fileptr1);
     }
-    fclose(fileptr1);
-    fclose(fileptr2);
-    remove(filechar);
-    rename("replica.c", filechar);
-    fileptr1 = fopen(filechar, "r");
-    //reads the character from file
-    c = getc(fileptr1);
-    //until last character of file is encountered
-    while (c != EOF)
-    {
-        printf("%c", c);
-        //all characters are printed
-        c = getc(fileptr1);
-    }
-    fclose(fileptr1);
+    fclose(fptr1);
+    fclose(fptr2);
+    remove(fname);
+    rename(temp, fname);
+    printf(" Replacement did successfully..!! \n");
     return 0;
 }
 int main (int argc, char *argv[]) {
-    readLine();
+    readFile();
     char *line = NULL;  /* forces getline to allocate with malloc */
     size_t len = 0;     /* ignored when line = NULL */
     ssize_t read;
 
-    printf ("\nEnter string below [ctrl + d] to quit\n");
+    printf ("\nEntre com o comando, [ctrl + d] para sair\n");
 
     while ((read = getline(&line, &len, stdin)) != -1) {
 
         if (read > 0)
             printf ("\n  read %zd chars from stdin, allocated %zd bytes for line : %s\n", read, len, line);
 
-        printf ("Enter string below [ctrl + d] to quit\n");
+        printf ("\nEntre com o comando, [ctrl + d] para sair\n");
     }
 
     free (line);  /* free memory allocated by getline */
