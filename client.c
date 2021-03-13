@@ -3,6 +3,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef HEADER_FILE
+#define HEADER_FILE
+
+#include "commands.h"
+
+#endif
 
 #define MAX 256  
 
@@ -156,7 +162,9 @@ int replaceLine()
     return 0;
 }
 int main (int argc, char *argv[]) {
-    readLines(3,5);
+    while(1){
+        
+    }
     // char *line = NULL;  /* forces getline to allocate with malloc */
     // size_t len = 0;     /* ignored when line = NULL */
     // ssize_t read;

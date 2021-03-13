@@ -1,2 +1,2 @@
-kilo: files.c
-	gcc files.c -o files -Wall -Wextra -pedantic -std=c99
+all:
+	gcc client.c commands.c -o client -Wall -Wextra -pedantic -std=c99
