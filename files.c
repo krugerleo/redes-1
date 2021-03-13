@@ -6,11 +6,11 @@
 
 #define MAX 256  
 
-int list(){
+int list(char *c){
     struct dirent *de;  // Pointer for directory entry 
   
     // opendir() returns a pointer of DIR type.  
-    DIR *dr = opendir("."); 
+    DIR *dr = opendir(c); 
   
     if (dr == NULL)  // opendir returns NULL if couldn't open directory 
     { 
@@ -28,17 +28,17 @@ int list(){
 void changeDir(char *c){
     chdir(c); 
 }
-int validMsg(char *c){
+int validCommand(char *c){
     
 }
-void readFile(){
+void readFile(char *c){
     FILE * fp;
     int count=0;
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
 
-    fp = fopen("text.txt", "r");
+    fp = fopen(c, "r");
     if (fp == NULL)
         return ;
     printf("#N N=numero da linha");
@@ -52,21 +52,43 @@ void readFile(){
         free(line);
     return;
 }
-void readLines(int begin, int end){
+void readLines(int begin, int end, char *c){
     FILE * fp;
     int count=0;
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
 
-    fp = fopen("Makefile", "r");
+    fp = fopen(c, "r");
     if (fp == NULL)
         return ;
 
     while ((read = getline(&line, &len, fp)) != -1) {
         if(count >= begin && count <= end){
             printf("#%d %s", count, line);
-            count++;
+        }
+        count++;
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+    return;
+}
+void readLine(int number, char *c){
+    FILE * fp;
+    int count=0;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen(c, "r");
+    if (fp == NULL)
+        return ;
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        if(count == number){
+            printf("#%d %s", count, line);
         }
         count++;
     }
@@ -134,22 +156,22 @@ int replaceLine()
     return 0;
 }
 int main (int argc, char *argv[]) {
-    readFile();
-    char *line = NULL;  /* forces getline to allocate with malloc */
-    size_t len = 0;     /* ignored when line = NULL */
-    ssize_t read;
+    readLines(3,5);
+    // char *line = NULL;  /* forces getline to allocate with malloc */
+    // size_t len = 0;     /* ignored when line = NULL */
+    // ssize_t read;
 
-    printf ("\nEntre com o comando, [ctrl + d] para sair\n");
+    // printf ("\nEntre com o comando, [ctrl + d] para sair\n");
 
-    while ((read = getline(&line, &len, stdin)) != -1) {
+    // while ((read = getline(&line, &len, stdin)) != -1) {
 
-        if (read > 0)
-            printf ("\n  read %zd chars from stdin, allocated %zd bytes for line : %s\n", read, len, line);
+    //     if (read > 0)
+    //         printf ("\n  read %zd chars from stdin, allocated %zd bytes for line : %s\n", read, len, line);
 
-        printf ("\nEntre com o comando, [ctrl + d] para sair\n");
-    }
+    //     printf ("\nEntre com o comando, [ctrl + d] para sair\n");
+    // }
 
-    free (line);  /* free memory allocated by getline */
+    // free (line);  /* free memory allocated by getline */
 
-    return 0;
+    // return 0;
 } 
