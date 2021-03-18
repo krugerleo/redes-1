@@ -1,2 +1,2 @@
 all:
-	gcc client.c commands.c -o client -Wall -Wextra -pedantic -std=c99
+	gcc client.c -o client -Wall -Wextra -pedantic -std=c99

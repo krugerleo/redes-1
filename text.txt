@@ -1,0 +1,15 @@
+1. cd <nome_dir> – efetua a troca de diretório no servidor
+2. lcd <nome-dir> – efetua a troca de diretório no cliente
+3. ls – lista os arquivos do diretório corrente do servidor
+4. lls – lista os arquivos do diretório corrente do cliente
+5. ver <nome_arq> - mostra o conteúdo do arquivo texto do servidor na tela do cliente. As
+linhas do arquivo devem ser numeradas para mostrar na tela.
+6. linha <numero_linha> <nome_arq> - mostra a linha <numero_linha> do arquivo
+<nome_arq> que esta no servidor na tela do cliente.
+7. linhas <numero_linha_inicial> <numero_linha_final> <nome_arq> - mostra as linhas
+entre a <numero_linha_inicial> e <numero_linha_final> do arquivo <nome_arq> que
+esta no servidor na tela do cliente.
+8. edit <numero_linha> <nome_arq> “<NOVO_TEXTO>” – troca a linha <numero_linha> do
+arquivo <nome_arq> que esta no servidor pelo texto <NOVO_TEXTO> que deve ser
+digitado entre aspas. As aspas são delimitadores do texto e não devem ser escritas no
+arquivo.

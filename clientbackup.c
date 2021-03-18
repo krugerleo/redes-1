@@ -161,25 +161,8 @@ int replaceLine()
     printf(" Replacement did successfully..!! \n");
     return 0;
 }
-int main (int argc, char *argv[]) {
+int main () {
     while(1){
-        
+        replaceLine();
     }
-    // char *line = NULL;  /* forces getline to allocate with malloc */
-    // size_t len = 0;     /* ignored when line = NULL */
-    // ssize_t read;
-
-    // printf ("\nEntre com o comando, [ctrl + d] para sair\n");
-
-    // while ((read = getline(&line, &len, stdin)) != -1) {
-
-    //     if (read > 0)
-    //         printf ("\n  read %zd chars from stdin, allocated %zd bytes for line : %s\n", read, len, line);
-
-    //     printf ("\nEntre com o comando, [ctrl + d] para sair\n");
-    // }
-
-    // free (line);  /* free memory allocated by getline */
-
-    // return 0;
 } 

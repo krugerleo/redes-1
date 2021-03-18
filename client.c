@@ -1,14 +1,9 @@
+#define  _GNU_SOURCE
 #include <stdio.h> 
 #include <dirent.h> 
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef HEADER_FILE
-#define HEADER_FILE
-
-#include "commands.h"
-
-#endif
 
 #define MAX 256  
 
@@ -34,8 +29,32 @@ int list(char *c){
 void changeDir(char *c){
     chdir(c); 
 }
+void red () {
+  printf("\033[1;31m");
+}
+
+void yellow (){
+  printf("\033[1;33m");
+}
+
+void reset () {
+  printf("\033[0m");
+}
+
 int validCommand(char *c){
-    
+    char *commands [] = {"cd", "lcd", "ls", "lls", "ver", "linha", "linhas", "edit"};
+    int length = 8;
+    for(int i = 1; i <= length; ++i)
+    {
+        if(!strcmp(commands[i], c))
+        {
+            return 0;
+        }
+    }
+    red();
+    printf("\"%s\" é um comando inválido", c);
+    reset();
+    return -1;
 }
 void readFile(char *c){
     FILE * fp;
@@ -116,6 +135,7 @@ int replaceLine()
     printf(" Input the file name to be opened : ");
     fgets(fname, MAX, stdin);
     fname[strlen(fname) - 1] = '\0';
+    printf("%s",fname);
     fptr1 = fopen(fname, "r");
     if (!fptr1) 
     {
@@ -161,25 +181,51 @@ int replaceLine()
     printf(" Replacement did successfully..!! \n");
     return 0;
 }
-int main (int argc, char *argv[]) {
+
+int main () {
+    char command[6];
+    int line,end;
+    char name[MAX],text[512];
+
     while(1){
-        
+        printf("escreva um comando\n");
+        scanf("%s",command);
+        if(!(validCommand(command))){
+            if(!(strcmp("cd",command))){
+                // cd <nome_dir>
+                scanf("%s",name);
+            }
+            else if(!(strcmp("lcd",command))){
+                // lcd <nome-dir>
+                scanf("%s",name);
+            }
+            else if(!(strcmp("ls",command))){
+                // ls
+            }
+            else if(!(strcmp("lls",command))){
+                // lls
+            }
+            else if(!(strcmp("ver",command))){
+                // ver <nome_arq>
+                scanf("%s",name);
+            }
+            else if(!(strcmp("linha",command))){
+                // linha <numero_linha> <nome_arq>
+                scanf("%d",&line);
+                scanf("%s",name);
+            }
+            else if(!(strcmp("linhas",command))){
+                // linhas <numero_linha_inicial> <numero_linha_final> <nome_arq>
+                scanf("%d",&line);
+                scanf("%d",&end);
+                scanf("%s",name);
+            }
+            else if(!(strcmp("edit",command))){
+                // edit <numero_linha> <nome_arq> “<NOVO_TEXTO>”
+                scanf("%d",&line);
+                scanf("%s",name);
+                scanf("%s",text);
+            }
+        }
     }
-    // char *line = NULL;  /* forces getline to allocate with malloc */
-    // size_t len = 0;     /* ignored when line = NULL */
-    // ssize_t read;
-
-    // printf ("\nEntre com o comando, [ctrl + d] para sair\n");
-
-    // while ((read = getline(&line, &len, stdin)) != -1) {
-
-    //     if (read > 0)
-    //         printf ("\n  read %zd chars from stdin, allocated %zd bytes for line : %s\n", read, len, line);
-
-    //     printf ("\nEntre com o comando, [ctrl + d] para sair\n");
-    // }
-
-    // free (line);  /* free memory allocated by getline */
-
-    // return 0;
 } 
