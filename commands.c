@@ -1,5 +1,4 @@
 #include "commands.h"
-
 int list(){
     struct dirent *de;  // Pointer for directory entry 
   

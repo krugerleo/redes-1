@@ -1,4 +1,7 @@
 #include "client.h"
+const int ORIGI = 01;
+const int DESTI = 10;
+
 
 int main () {
     char command[6];
@@ -13,8 +16,10 @@ int main () {
         if(!(validCommand(command))){
             if(!(strcmp("cd",command))){
                 // cd <nome_dir>
-                scanf("%s",name);
-                send_msg(name,CDT);
+                fgets(name, MAX, stdin);
+                // scanf("%s",name);
+                // send_msg(name,CDT,ORIGI,DESTI);
+                send_msg(NULL,EOT,ORIGI,DESTI);
             }
             else if(!(strcmp("lcd",command))){
                 // lcd <nome-dir>

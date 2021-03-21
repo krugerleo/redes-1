@@ -18,8 +18,8 @@
 typedef struct Package_header
 {
     unsigned char mark : 8; // 01111110     
-    unsigned char Dest : 2;
-    unsigned char Orig : 2;              
+    unsigned char dest : 2;
+    unsigned char orig : 2;              
     unsigned char size : 4;                
     unsigned char seq : 4;               
     unsigned char type : 4;
@@ -55,8 +55,9 @@ typedef enum {
 
 
 int ConexaoRawSocket(char *device);
-void send_msg(char *data, int type);
+void send_msg(char *data, int type, int orig, int dest);
 void init_socket();
+void print_msg(Package_header *msg);
 Package_header * recieve_msg();
 
 #endif
