@@ -4,6 +4,12 @@ Package_header *lastMessage;
 int seqCounter = 0;
 int sock_r;
 
+int timeo(int count){
+    unsigned int timeout=769;
+	while ((--timeout > 0)){
+    }    
+    return count++;
+}
 int make_parity(Package_header *msg){
     unsigned char p = msg->size ^ msg->seq ^ msg->type;
     for (int i = 0; i < msg->size; i++) {
@@ -160,9 +166,11 @@ void communication(char *data, int type, int orig, int dest, int first) {
             lastMessage = msg;
             wait_resp:
             resp = recieve_msg();
+            if(resp->dest != orig){goto wait_resp;}
             if(resp->type == NACK){printf("NACK\n");send_last();goto wait_resp;}
             if(resp->type == ERROR){printf("\n\t| Erro -> %s\n",resp->data);}
             if(resp->type != ACK){printf("\nWaiting for ACK recieve -> %u",resp->type); goto wait_resp;};
+            
         } while (size > 0);        
     } else {
         msg->size = 0;
@@ -172,6 +180,7 @@ void communication(char *data, int type, int orig, int dest, int first) {
         if(msg->type == EOT){
             wait_ack:
             resp = recieve_msg();
+            if(resp->dest != orig){goto wait_ack;}
             if(resp->type == NACK){printf("NACK\n");send_last();goto wait_ack;}
             if(resp->type == ERROR){printf("\n\t| Erro -> %s\n",resp->data);return;}
             if(resp->type != ACK){printf("\nWaiting for ACK recieve -> %u",resp->type); goto wait_ack;};

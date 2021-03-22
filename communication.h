@@ -67,6 +67,7 @@ int make_parity(Package_header *msg);
 void init_socket();
 void print_msg(Package_header *msg);
 void send_last();
+int timeo(int count);
 Package_header * recieve_msg();
 
 #endif

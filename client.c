@@ -4,6 +4,7 @@ int main () {
     char command[6];
     char name[MAX],text[512],begin[15],end[15];
     int seq = 0;
+
     Sender client = { .orig = 1, .dest=2};
     Package_header *msg;
     Package_header *resp;

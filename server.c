@@ -68,7 +68,6 @@ void send_arq(char *c, Sender client){
         return;
 }
 
-
 void server(){
     Sender client = { .orig = 2, .dest=1};
     Package_header *msg;
@@ -78,8 +77,7 @@ void server(){
     recieve:
     msg = recieve_msg();
 
-
-    if(msg->dest != client.orig){printf("not for me\n");goto recieve;}
+    if(msg->dest != client.orig){goto recieve;}
     
     if(msg->type == CDT){
         char *aux = malloc(sizeof(char));
