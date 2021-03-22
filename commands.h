@@ -9,9 +9,10 @@
 #include <string.h>
 
 #define MAX 256
+#define BUFFER_SIZE 1000
 
 int list();
-void changeDir(char *c);
+int changeDir(char *c);
 void red ();
 void yellow ();
 void reset ();

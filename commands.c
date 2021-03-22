@@ -18,16 +18,8 @@ int list(){
     return 0; 
 }
 
-void changeDir(char *c){
-    char s[100]; 
-  
-    // printing current working directory 
-    printf("%s\n", getcwd(s, 100)); 
-    if (chdir(c) != 0)  
-        perror("chdir() to /usr failed"); 
-  
-    // printing current working directory 
-    printf("%s\n", getcwd(s, 100)); 
+int changeDir(char *c){
+    return chdir(c);
 }
 void red () {
   printf("\033[1;31m");
@@ -46,14 +38,12 @@ int validCommand(char *c){
     int length = 8;
     for(int i = 0; i < length; ++i)
     {
-        printf("%s = %s",c,commands[i]);
         if(!strcmp(commands[i], c))
         {
             return 0;
         }
     }
     red();
-    printf("\"%s\" é um comando inválido", c);
     reset();
     return -1;
 }
@@ -124,61 +114,55 @@ void readLine(int number, char *c){
         free(line);
     return;
 }
-int replaceLine()
+int replaceLine(char *fn, int line, char text[512])
 {
-    FILE *fptr1, *fptr2;
-    int lno, linectr = 0;
-    char str[MAX],fname[MAX];        
-    char newln[MAX], temp[] = "temp.txt";
+        /* File pointer to hold reference of input file */
+    FILE * fPtr;
+    FILE * fTemp;
+    char path[100];
     
-    printf("\n\n Replace a specific line in a text file with a new text :\n");
-    printf("-------------------------------------------------------------\n"); 
-    printf(" Input the file name to be opened : ");
-    fgets(fname, MAX, stdin);
-    fname[strlen(fname) - 1] = '\0';
-    printf("%s",fname);
-    fptr1 = fopen(fname, "r");
-    if (!fptr1) 
+    char buffer[BUFFER_SIZE];
+    char newline[BUFFER_SIZE];
+    int  count;
+
+
+    /* Remove extra new line character from stdin */
+    strcpy(path,fn);
+    strcpy(newline,text);
+    // strcat(newline,"\n");
+
+    /*  Open all required files */
+    fPtr  = fopen(path, "r");
+    fTemp = fopen("replace.tmp", "w"); 
+    /* fopen() return NULL if unable to open file in given mode. */
+    if (fPtr == NULL || fTemp == NULL)
     {
-            printf("Unable to open the input file!!\n");
-            return 0;
+        /* Unable to open file hence exit */
+        printf("\nUnable to open file.\n");
+        printf("Please check whether file exists and you have read/write privilege.\n");
+        return 0;
     }
-    fptr2 = fopen(temp, "w");
-    if (!fptr2) 
+    /*
+     * Read line from source file and write to destination 
+     * file after replacing given line.
+     */
+    count = 0;
+    while ((fgets(buffer, BUFFER_SIZE, fPtr)) != NULL)
     {
-            printf("Unable to open a temporary file to write!!\n");
-            fclose(fptr1);
-            return 0;
+        count++;
+        /* If current line is line to replace */
+        if (count == line)
+            fputs(newline, fTemp);
+        else
+            fputs(buffer, fTemp);
     }
-    /* get the new line from the user */
-    printf(" Input the content of the new line : ");
-    fgets(newln, MAX, stdin);
-    /* get the line number to delete the specific line */
-    printf(" Input the line no you want to replace : ");
-    scanf("%d", &lno);
-    lno++;
-        // copy all contents to the temporary file other except specific line
-    while (!feof(fptr1)) 
-    {
-        strcpy(str, "\0");
-        fgets(str, MAX, fptr1);
-        if (!feof(fptr1)) 
-        {
-            linectr++;
-            if (linectr != lno) 
-                {
-                    fprintf(fptr2, "%s", str);
-                } 
-                else 
-                {
-                    fprintf(fptr2, "%s", newln);
-                }
-            }
-    }
-    fclose(fptr1);
-    fclose(fptr2);
-    remove(fname);
-    rename(temp, fname);
-    printf(" Replacement did successfully..!! \n");
-    return 0;
+    /* Close all files to release resource */
+    fclose(fPtr);
+    fclose(fTemp);
+    /* Delete original source file */
+    remove(path);
+    /* Rename temporary file as original file */
+    rename("replace.tmp", path);
+    printf("\nSuccessfully replaced '%d' line with '%s'.", line, newline);
+    return 1;
 }
